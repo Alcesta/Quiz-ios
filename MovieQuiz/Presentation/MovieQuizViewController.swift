@@ -81,14 +81,18 @@ final class MovieQuizViewController: UIViewController {
         let currentQuestion = questions[currentQuestionIndex]
         let givenAnswer = true
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
-        myYesButton.isEnabled = false
+        enableButtons(isEnable: false)
     }
     
     @IBAction private func noButtonClicked(_ sender: UIButton) {
         let currentQuestion = questions[currentQuestionIndex]
         let givenAnswer = false
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
-        myNoButton.isEnabled = false
+        enableButtons(isEnable: false)
+    }
+    private func enableButtons(isEnable: Bool) {
+        myYesButton.isEnabled = isEnable
+        myNoButton.isEnabled = isEnable
     }
     
     private func show(quiz step: QuizStepViewModel) {
@@ -114,8 +118,7 @@ final class MovieQuizViewController: UIViewController {
     
     private func showNextQuestionOrResults() {
         imageView.layer.borderWidth = 0
-        myYesButton.isEnabled = true
-        myNoButton.isEnabled = true
+        enableButtons(isEnable: true)
         if currentQuestionIndex == questions.count - 1 {
             let viewModel = QuizResultsViewModel(
                 title: "Этот раунд окончен!",
