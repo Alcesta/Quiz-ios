@@ -37,13 +37,13 @@ class QuestionFactory: QuestionFactoryProtocol {
             correctAnswer: false)
     ]
     func requestNextQuestion(_ questionIndex: Int?) {
-            guard let index = questionIndex else {
-                let question = questions[safe: 0]
-                delegate?.didReceiveNextQuestion(question: question)
-                return
-            }
-
-            let question = questions[safe: index]
+        guard let index = questionIndex else {
+            let question = questions[safe: 0]
             delegate?.didReceiveNextQuestion(question: question)
+            return
         }
+        
+        let question = questions[safe: index]
+        delegate?.didReceiveNextQuestion(question: question)
+    }
 }

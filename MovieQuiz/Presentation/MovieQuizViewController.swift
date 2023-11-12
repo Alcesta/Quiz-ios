@@ -14,6 +14,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var questionFactory: QuestionFactoryProtocol = QuestionFactory()
     private var currentQuestion: QuizQuestion?
     
+    private var alertPresenter: AlertPresenter?
+    
+    private var statisticService: StatisticService = StatisticServiceImplementation()
+    
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
         QuizStepViewModel(
             image: UIImage(named: model.image) ?? UIImage(),
@@ -26,24 +30,19 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = 20
         questionFactory.delegate = self
+        alertPresenter = ResultAlertPresenter(viewController: self)
         questionFactory.requestNextQuestion(currentQuestionIndex)
-        //if let firstQuestion = questionFactory.requestNextQuestion() {
-          //  currentQuestion = firstQuestion
-         //   let viewModel = convert(model: firstQuestion)
-         //   show(quiz: viewModel)
-        //}
     }
     // MARK: - QuestionFactoryDelegate
     
     func didReceiveNextQuestion(question: QuizQuestion?) {
         guard let question = question else {
-                return
-            }
-
-            currentQuestion = question
-            let viewModel = convert(model: question)
-        DispatchQueue.main.async {
-            [weak self] in
+            return
+        }
+        
+        currentQuestion = question
+        let viewModel = convert(model: question)
+        DispatchQueue.main.async { [weak self] in
             self?.show(quiz: viewModel)
         }
     }
@@ -96,43 +95,45 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         }
     }
     
+    private func refreshStatistic() {
+        statisticService.store(correct: correctAnswers, total: statisticService.gamesCount + 1)
+    }
+    
     private func showNextQuestionOrResults() {
         imageView.layer.borderWidth = 0
         enableButtons(isEnable: true)
         if currentQuestionIndex == questionsAmount - 1 {
+            refreshStatistic()
+            //let date = Date()
+            //let formatter = DateFormatter()
+            //formatter.dateFormat = "dd-MM-yyyy HH:mm:ss"
             let viewModel = QuizResultsViewModel(
                 title: "Этот раунд окончен!",
-                text: "Ваш результат: \(correctAnswers)/10",
+                text: "Ваш результат: \(correctAnswers)/\(questionsAmount)",
                 buttonText: "Сыграть ещё раз")
             show(quiz: viewModel)
         } else {
             currentQuestionIndex += 1
             
             questionFactory.requestNextQuestion(currentQuestionIndex.self)
-           // if let nextQuestion = questionFactory.requestNextQuestion() {
-             //   currentQuestion = nextQuestion
-              //  let viewModel = convert(model: nextQuestion)
-                
-             //   show(quiz: viewModel)
-            //}
         }
     }
     
-    private func show(quiz result: QuizResultsViewModel) {        let alert = UIAlertController(title: result.title, message: result.text, preferredStyle: .alert)
-        let action = UIAlertAction(title: result.buttonText, style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            self.currentQuestionIndex = 0
-            self.correctAnswers = 0
-            
-            questionFactory.requestNextQuestion(currentQuestionIndex)
-            //if let firstQuestion = self.questionFactory.requestNextQuestion() {
-              //  self.currentQuestion = firstQuestion
-               // let viewModel = self.convert(model: firstQuestion)
-               // self.show(quiz: viewModel)
-           // }
-        }
-        alert.addAction(action)
-        
-        self.present(alert, animated: true, completion: nil)
+    private func show(quiz result: QuizResultsViewModel) {
+        let bestGame = statisticService.bestGame
+        let bestDate = bestGame.date.dateTimeString
+        let currentAccuracy = "\(String(format: "%.2f", statisticService.totalAccuracy))%"
+        let alertModel = AlertModel(
+            title: "Игра окончена",
+            message: "Ваш результат: \(correctAnswers)/\(questionsAmount)\nКоличество сыграных квизов: \(statisticService.gamesCount)\nРекорд: \(bestGame.correct)/10 \(bestDate)\nСредняя точность: \(currentAccuracy)",
+            buttonText: "OK",
+            completion: { [weak self] in
+                guard let self else { return }
+                self.currentQuestionIndex = 0
+                self.correctAnswers = 0
+                self.questionFactory.requestNextQuestion(self.currentQuestionIndex)
+            })
+        alertPresenter?.show(alertModel: alertModel)
+        let alert = UIAlertController(title: result.title, message: result.text, preferredStyle: .alert)
     }
 }
