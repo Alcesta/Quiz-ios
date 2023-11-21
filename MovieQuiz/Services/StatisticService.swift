@@ -1,7 +1,7 @@
 import Foundation
 
 protocol StatisticService {
-    func store(correct count: Int, total amount: Int)
+    func storeNewResults(correct count: Int)
     var totalAccuracy: Double { get }
     var gamesCount: Int { get }
     var bestGame: GameRecord { get }
@@ -10,7 +10,7 @@ protocol StatisticService {
 
 final class StatisticServiceImplementation: StatisticService {
     private enum Keys: String {
-        case correct, total, bestGame, gamesCount
+        case correct, total, bestGame, gamesCount, totalCorrectAnswers
     }
     
     private let userDefaults = UserDefaults.standard
@@ -21,6 +21,15 @@ final class StatisticServiceImplementation: StatisticService {
         }
         set {
             userDefaults.set(newValue, forKey: Keys.total.rawValue)
+        }
+    }
+    
+    var totalCorrectAnswers: Int {
+        get {
+            userDefaults.integer(forKey: Keys.totalCorrectAnswers.rawValue)
+        }
+        set {
+            userDefaults.set(newValue, forKey: Keys.totalCorrectAnswers.rawValue)
         }
     }
     
@@ -52,13 +61,15 @@ final class StatisticServiceImplementation: StatisticService {
         }
     }
     
-    func store(correct count: Int, total amount: Int) {
-        totalAccuracy = (Double(count) / 10) * 100
-        let newGameRecord = GameRecord(correct: count, total: amount, date: Date())
+    func storeNewResults(correct count: Int) {
+        let newAmount = gamesCount + 1
+        totalCorrectAnswers += count
+        totalAccuracy = (Double(totalCorrectAnswers) / (10 * Double(newAmount))) * 100
+        let newGameRecord = GameRecord(correct: count, total: newAmount, date: Date())
         if newGameRecord.isBetterThan(bestGame) {
             bestGame = newGameRecord
         }
-        gamesCount = amount
+        gamesCount = newAmount
         
     }
 }
