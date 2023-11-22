@@ -82,7 +82,7 @@ final class MovieQuizViewController: UIViewController {
         imageView.layer.cornerRadius = 20
         imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             self.showNextQuestionOrResults()
         }
@@ -96,9 +96,6 @@ final class MovieQuizViewController: UIViewController {
         imageView.layer.borderWidth = 0
         if currentQuestionIndex == questionsAmount - 1 {
             refreshStatistic()
-            //let date = Date()
-            //let formatter = DateFormatter()
-            //formatter.dateFormat = "dd-MM-yyyy HH:mm:ss"
             enableButtons(isEnable: true)
             let viewModel = QuizResultsViewModel(
                 title: "Этот раунд окончен!",
