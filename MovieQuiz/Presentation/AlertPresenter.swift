@@ -10,7 +10,7 @@ protocol AlertPresenter {
 final class ResultAlertPresenter {
     private weak var viewController: UIViewController?
     
-    init(viewController: UIViewController? = nil) {
+    init(viewController: UIViewController) {
         self.viewController = viewController
     }
 }
@@ -23,6 +23,6 @@ extension ResultAlertPresenter: AlertPresenter {
         }
         alert.addAction(action)
         
-        viewController?.present(alert, animated: true)
+        viewController?.present(alert, animated: true, completion: nil)
     }
 }
