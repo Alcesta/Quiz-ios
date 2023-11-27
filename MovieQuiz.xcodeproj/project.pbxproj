@@ -23,6 +23,7 @@
 		13738DCE2B0A38F6000E956D /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13738DCD2B0A38F6000E956D /* NetworkClient.swift */; };
 		13738DD02B0A4458000E956D /* MostPopularMovies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13738DCF2B0A4458000E956D /* MostPopularMovies.swift */; };
 		13738DD22B0A4626000E956D /* MoviesLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13738DD12B0A4626000E956D /* MoviesLoader.swift */; };
+		13A0D0352B13E14F00137DFD /* MovieQuizPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A0D0342B13E14F00137DFD /* MovieQuizPresenter.swift */; };
 		13F3B5FD2B10FBAD00B4F114 /* ArrayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13F3B5FC2B10FBAD00B4F114 /* ArrayTests.swift */; };
 		13F3B5FF2B10FC1900B4F114 /* MoviesLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13F3B5FE2B10FC1900B4F114 /* MoviesLoaderTests.swift */; };
 		AD1ABAB22831907B00B3E448 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1ABAB12831907B00B3E448 /* AppDelegate.swift */; };
@@ -71,6 +72,7 @@
 		13738DCD2B0A38F6000E956D /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
 		13738DCF2B0A4458000E956D /* MostPopularMovies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostPopularMovies.swift; sourceTree = "<group>"; };
 		13738DD12B0A4626000E956D /* MoviesLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesLoader.swift; sourceTree = "<group>"; };
+		13A0D0342B13E14F00137DFD /* MovieQuizPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieQuizPresenter.swift; sourceTree = "<group>"; };
 		13F3B5F32B10FB9800B4F114 /* MovieQuizTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MovieQuizTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		13F3B5FC2B10FBAD00B4F114 /* ArrayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayTests.swift; sourceTree = "<group>"; };
 		13F3B5FE2B10FC1900B4F114 /* MoviesLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesLoaderTests.swift; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 				AD1ABAB52831907B00B3E448 /* MovieQuizViewController.swift */,
 				AD1ABAB72831907B00B3E448 /* Main.storyboard */,
 				136C8A8E2AE0774600EA13C3 /* AlertPresenter.swift */,
+				13A0D0342B13E14F00137DFD /* MovieQuizPresenter.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -372,6 +375,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				13A0D0352B13E14F00137DFD /* MovieQuizPresenter.swift in Sources */,
 				AD5EE5DE284D7887003966EF /* UIColor+Extensions.swift in Sources */,
 				136C8A8F2AE0774600EA13C3 /* AlertPresenter.swift in Sources */,
 				136C8A8D2AE0773700EA13C3 /* AlertModel.swift in Sources */,
@@ -440,7 +444,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ru.yandex.practicum.MovieQuizUITests1;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.yandex.practicum.MovieQuizUITests12;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -461,7 +465,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ru.yandex.practicum.MovieQuizUITests1;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.yandex.practicum.MovieQuizUITests12;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -477,6 +481,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 83DH7VMMY3;
@@ -499,6 +504,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 83DH7VMMY3;
