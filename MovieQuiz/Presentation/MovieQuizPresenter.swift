@@ -4,6 +4,7 @@ import UIKit
 final class MovieQuizPresenter {
     let questionsAmount: Int = 10
     private var currentQuestionIndex: Int = 0
+    var correctAnswers: Int = 0
     
     var currentQuestion: QuizQuestion?
     weak var viewController: MovieQuizViewController?
@@ -12,8 +13,15 @@ final class MovieQuizPresenter {
         currentQuestionIndex == questionsAmount - 1
     }
     
-    func resetQuestionIndex() {
+    func didAnswer(isCorrectAnswer: Bool) {
+            if isCorrectAnswer {
+                correctAnswers += 1
+            }
+        }
+    
+    func restartGame() {
         currentQuestionIndex = 0
+        correctAnswers = 0
     }
     
     func switchToNextQuestion() {
@@ -42,7 +50,7 @@ final class MovieQuizPresenter {
         
         let givenAnswer = isYes
         
-        viewController?.showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+        self.showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
     
     func didRecieveNextQuestion(question: QuizQuestion?) {
@@ -68,7 +76,7 @@ final class MovieQuizPresenter {
             viewController?.enableButtons(isEnable: true)
             let viewModel = QuizResultsViewModel(
                 title: "Этот раунд окончен!",
-                text: "Ваш результат: \(viewController?.correctAnswers)/\(questionsAmount)",
+                text: "Ваш результат: \(correctAnswers)/\(questionsAmount)",
                 buttonText: "Сыграть ещё раз")
             viewController?.show(quiz: viewModel)
         } else {
@@ -78,6 +86,21 @@ final class MovieQuizPresenter {
             viewController?.showLoadingIndicator()
             
             viewController?.questionFactory.requestNextQuestion()
+        }
+    }
+    
+    func showAnswerResult(isCorrect: Bool) {
+        if isCorrect {
+            correctAnswers += 1
+        }
+        viewController?.imageView.layer.masksToBounds = true
+        viewController?.imageView.layer.borderWidth = 8
+        viewController?.imageView.layer.cornerRadius = 20
+        viewController?.imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            self.showNextQuestionOrResults()
         }
     }
 }
