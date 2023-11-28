@@ -10,7 +10,7 @@ final class MovieQuizViewController: UIViewController {
     
     private var correctAnswers = 0
     
-    private var questionFactory: QuestionFactoryProtocol = QuestionFactory(moviesLoader: MoviesLoader())
+    var questionFactory: QuestionFactoryProtocol = QuestionFactory(moviesLoader: MoviesLoader())
     private var currentQuestion: QuizQuestion?
     
     private var alertPresenter: AlertPresenter?
@@ -54,7 +54,7 @@ final class MovieQuizViewController: UIViewController {
         myNoButton.isEnabled = isEnable
     }
     
-    private func show(quiz step: QuizStepViewModel) {
+    func show(quiz step: QuizStepViewModel) {
         enableButtons(isEnable: true)
         imageView.image = step.image
         textLabel.text = step.question
@@ -124,11 +124,11 @@ final class MovieQuizViewController: UIViewController {
         activityIndicator.startAnimating()
     }
     
-    private func hideActivityIndicator() {
+    func hideActivityIndicator() {
         activityIndicator.isHidden = true
     }
     
-    private func showNetworkError(
+    func showNetworkError(
         message: String,
         onRetryButton: @escaping () -> Void
     ) {
@@ -146,7 +146,7 @@ final class MovieQuizViewController: UIViewController {
 
 //MARK: QuestionFactoryDelegate
 extension MovieQuizViewController: QuestionFactoryDelegate {
-    func didReceiveNextQuestion(question: QuizQuestion?) {
+    func didRecieveNextQuestion(question: QuizQuestion?) {
         hideActivityIndicator()
         guard let question = question else {
             showNetworkError(message: "Failed to load question") { [weak self] in

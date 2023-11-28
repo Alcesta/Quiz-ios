@@ -44,5 +44,21 @@ final class MovieQuizPresenter {
         
         viewController?.showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
+    
+    func didRecieveNextQuestion(question: QuizQuestion?) {
+        viewController?.hideActivityIndicator()
+        guard let question = question else {
+            viewController?.showNetworkError(message: "Failed to load question") { [weak self] in
+                self?.viewController?.questionFactory.requestNextQuestion()
+            }
+            return
+        }
+        
+        currentQuestion = question
+        let viewModel = convert(model: question)
+        DispatchQueue.main.async { [weak self] in
+            self?.viewController?.show(quiz: viewModel)
+        }
+    }
 }
 
