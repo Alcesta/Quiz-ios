@@ -11,7 +11,7 @@ final class MovieQuizViewController: UIViewController {
     private var correctAnswers = 0
     
     var questionFactory: QuestionFactoryProtocol = QuestionFactory(moviesLoader: MoviesLoader())
-    private var currentQuestion: QuizQuestion?
+    //private var currentQuestion: QuizQuestion?
     
     private var alertPresenter: AlertPresenter?
     
@@ -39,13 +39,13 @@ final class MovieQuizViewController: UIViewController {
     }
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
-        presenter.currentQuestion = currentQuestion
+        //presenter.currentQuestion = currentQuestion
         presenter.yesButtonClicked()
         enableButtons(isEnable: false)
     }
     
     @IBAction private func noButtonClicked(_ sender: UIButton) {
-        presenter.currentQuestion = currentQuestion
+        //presenter.currentQuestion = currentQuestion
         presenter.noButtonClicked()
         enableButtons(isEnable: false)
     }
@@ -147,21 +147,23 @@ final class MovieQuizViewController: UIViewController {
 //MARK: QuestionFactoryDelegate
 extension MovieQuizViewController: QuestionFactoryDelegate {
     func didRecieveNextQuestion(question: QuizQuestion?) {
-        hideActivityIndicator()
-        guard let question = question else {
-            showNetworkError(message: "Failed to load question") { [weak self] in
-                self?.questionFactory.requestNextQuestion()
-            }
-            return
-        }
-        
-        currentQuestion = question
-        let viewModel = presenter.convert(model: question)
-        DispatchQueue.main.async { [weak self] in
-            self?.show(quiz: viewModel)
-        }
+//        hideActivityIndicator()
+//        guard let question = question else {
+//            showNetworkError(message: "Failed to load question") { [weak self] in
+//                self?.questionFactory.requestNextQuestion()
+//            }
+//            return
+//        }
+//
+//        //currentQuestion = question
+//        let viewModel = presenter.convert(model: question)
+//        DispatchQueue.main.async { [weak self] in
+//            self?.show(quiz: viewModel)
+ //       }
+        presenter.didRecieveNextQuestion(question: question)
     }
     
+
     func didLoadDataFromServer() {
         questionFactory.requestNextQuestion()
     }
