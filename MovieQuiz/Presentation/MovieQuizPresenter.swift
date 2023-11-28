@@ -5,19 +5,25 @@ final class MovieQuizPresenter {
     let questionsAmount: Int = 10
     private var currentQuestionIndex: Int = 0
     var correctAnswers: Int = 0
+    var statisticService: StatisticService = StatisticServiceImplementation()
     
     var currentQuestion: QuizQuestion?
     weak var viewController: MovieQuizViewController?
     
-    func isLastQuestion() -> Bool {
-        currentQuestionIndex == questionsAmount - 1
+    func refreshStatistic() {
+        statisticService.storeNewResults(correct: correctAnswers)
     }
+       
     
     func didAnswer(isCorrectAnswer: Bool) {
             if isCorrectAnswer {
                 correctAnswers += 1
             }
         }
+    
+    func isLastQuestion() -> Bool {
+        currentQuestionIndex == questionsAmount - 1
+    }
     
     func restartGame() {
         currentQuestionIndex = 0
@@ -50,7 +56,7 @@ final class MovieQuizPresenter {
         
         let givenAnswer = isYes
         
-        self.showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
     
     func didRecieveNextQuestion(question: QuizQuestion?) {
@@ -72,7 +78,7 @@ final class MovieQuizPresenter {
     func showNextQuestionOrResults() {
         viewController?.imageView.layer.borderWidth = 0
         if isLastQuestion() {
-            viewController?.refreshStatistic()
+            refreshStatistic() // ОБНОВЛяЛКА ТТУУУУУТ viewController?.
             viewController?.enableButtons(isEnable: true)
             let viewModel = QuizResultsViewModel(
                 title: "Этот раунд окончен!",
@@ -90,17 +96,26 @@ final class MovieQuizPresenter {
     }
     
     func showAnswerResult(isCorrect: Bool) {
-        if isCorrect {
-            correctAnswers += 1
-        }
-        viewController?.imageView.layer.masksToBounds = true
-        viewController?.imageView.layer.borderWidth = 8
-        viewController?.imageView.layer.cornerRadius = 20
-        viewController?.imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
+        didAnswer(isCorrectAnswer: isCorrect)
+        viewController?.highlightImageBorder(isCorrectAnswer: isCorrect)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             self.showNextQuestionOrResults()
+        }
+    }
+    
+    func didLoadDataFromServer() {
+        viewController?.questionFactory.requestNextQuestion()
+    }
+    
+    func didFailToLoadData(with error: Error) {
+        viewController?.showNetworkError(message: error.localizedDescription) { [weak self] in
+            guard let self else { return }
+            self.restartGame()
+            self.correctAnswers = 0
+            
+            //self.questionFactory.loadData() //ФАБРИКААААА
         }
     }
 }

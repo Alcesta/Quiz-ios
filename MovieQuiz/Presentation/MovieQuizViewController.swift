@@ -13,7 +13,7 @@ final class MovieQuizViewController: UIViewController {
     
     private var alertPresenter: AlertPresenter?
     
-    private var statisticService: StatisticService = StatisticServiceImplementation()
+//    private var statisticService: StatisticService = StatisticServiceImplementation()
     
     private let presenter = MovieQuizPresenter()
 
@@ -24,7 +24,7 @@ final class MovieQuizViewController: UIViewController {
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = 20
         questionFactory = QuestionFactory(moviesLoader: MoviesLoader())
-        statisticService = StatisticServiceImplementation()
+        //statisticService = StatisticServiceImplementation()
         questionFactory.delegate = self
         alertPresenter = ResultAlertPresenter(viewController: self)
         questionFactory.requestNextQuestion()
@@ -57,17 +57,17 @@ final class MovieQuizViewController: UIViewController {
         counterLabel.text = step.questionNumber
     }
     
-    func refreshStatistic() {
-        statisticService.storeNewResults(correct: presenter.correctAnswers)
-    }
+//    func refreshStatistic() {
+//        statisticService.storeNewResults(correct: presenter.correctAnswers)
+//    }
     
     func show(quiz result: QuizResultsViewModel) {
-        let bestGame = statisticService.bestGame
+        let bestGame = presenter.statisticService.bestGame
         let bestDate = bestGame.date.dateTimeString
-        let currentAccuracy = "\(String(format: "%.2f", statisticService.totalAccuracy))%"
+        let currentAccuracy = "\(String(format: "%.2f", presenter.statisticService.totalAccuracy))%"
         let alertModel = AlertModel(
             title: "Игра окончена",
-            message: "Ваш результат: \(presenter.correctAnswers)/\(presenter.questionsAmount)\nКоличество сыграных квизов: \(statisticService.gamesCount)\nРекорд: \(bestGame.correct)/10 \(bestDate)\nСредняя точность: \(currentAccuracy)",
+            message: "Ваш результат: \(presenter.correctAnswers)/\(presenter.questionsAmount)\nКоличество сыграных квизов: \(presenter.statisticService.gamesCount)\nРекорд: \(bestGame.correct)/10 \(bestDate)\nСредняя точность: \(currentAccuracy)",
             buttonText: "OK",
             completion: { [weak self] in
                 guard let self else { return }
@@ -77,6 +77,13 @@ final class MovieQuizViewController: UIViewController {
             })
         alertPresenter?.show(alertModel: alertModel)
     }
+    
+    func highlightImageBorder(isCorrectAnswer: Bool) {
+        imageView.layer.masksToBounds = true
+        imageView.layer.borderWidth = 8
+        imageView.layer.cornerRadius = 20
+        imageView.layer.borderColor = isCorrectAnswer ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
+       }
     
     func showLoadingIndicator() {
         activityIndicator.color = .black
@@ -105,23 +112,23 @@ final class MovieQuizViewController: UIViewController {
 }
 
 //MARK: QuestionFactoryDelegate
-extension MovieQuizViewController: QuestionFactoryDelegate {
+extension MovieQuizViewController {
     func didRecieveNextQuestion(question: QuizQuestion?) {
         presenter.didRecieveNextQuestion(question: question)
     }
     
 
-    func didLoadDataFromServer() {
-        questionFactory.requestNextQuestion()
-    }
+//    func didLoadDataFromServer() {
+//        questionFactory.requestNextQuestion()
+//    }
     
-    func didFailToLoadData(with error: Error) {
-        showNetworkError(message: error.localizedDescription) { [weak self] in
-            guard let self else { return }
-            self.presenter.restartGame()
-            self.presenter.correctAnswers = 0
-            
-            self.questionFactory.loadData()
-        }
-    }
+//    func didFailToLoadData(with error: Error) {
+//        showNetworkError(message: error.localizedDescription) { [weak self] in
+//            guard let self else { return }
+//            self.presenter.restartGame()
+//            self.presenter.correctAnswers = 0
+//            
+//            self.questionFactory.loadData()
+//        }
+//    }
 }
