@@ -60,5 +60,25 @@ final class MovieQuizPresenter {
             self?.viewController?.show(quiz: viewModel)
         }
     }
+    
+    func showNextQuestionOrResults() {
+        viewController?.imageView.layer.borderWidth = 0
+        if isLastQuestion() {
+            viewController?.refreshStatistic()
+            viewController?.enableButtons(isEnable: true)
+            let viewModel = QuizResultsViewModel(
+                title: "Этот раунд окончен!",
+                text: "Ваш результат: \(viewController?.correctAnswers)/\(questionsAmount)",
+                buttonText: "Сыграть ещё раз")
+            viewController?.show(quiz: viewModel)
+        } else {
+            switchToNextQuestion()
+            
+            viewController?.imageView.image = nil
+            viewController?.showLoadingIndicator()
+            
+            viewController?.questionFactory.requestNextQuestion()
+        }
+    }
 }
 

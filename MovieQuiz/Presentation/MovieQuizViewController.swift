@@ -1,14 +1,14 @@
 import UIKit
 
 final class MovieQuizViewController: UIViewController {
-    @IBOutlet private var imageView: UIImageView!
+    @IBOutlet var imageView: UIImageView!
     @IBOutlet private var textLabel: UILabel!
     @IBOutlet private var counterLabel: UILabel!
     @IBOutlet weak var myYesButton: UIButton!
     @IBOutlet weak var myNoButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
-    private var correctAnswers = 0
+    var correctAnswers = 0
     
     var questionFactory: QuestionFactoryProtocol = QuestionFactory(moviesLoader: MoviesLoader())
     //private var currentQuestion: QuizQuestion?
@@ -49,7 +49,7 @@ final class MovieQuizViewController: UIViewController {
         presenter.noButtonClicked()
         enableButtons(isEnable: false)
     }
-    private func enableButtons(isEnable: Bool) {
+    func enableButtons(isEnable: Bool) {
         myYesButton.isEnabled = isEnable
         myNoButton.isEnabled = isEnable
     }
@@ -73,35 +73,35 @@ final class MovieQuizViewController: UIViewController {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
-            self.showNextQuestionOrResults()
+            self.presenter.showNextQuestionOrResults()
         }
     }
     
-    private func refreshStatistic() {
+    func refreshStatistic() {
         statisticService.storeNewResults(correct: correctAnswers)
     }
     
-    private func showNextQuestionOrResults() {
-        imageView.layer.borderWidth = 0
-        if presenter.isLastQuestion() {
-            refreshStatistic()
-            enableButtons(isEnable: true)
-            let viewModel = QuizResultsViewModel(
-                title: "Этот раунд окончен!",
-                text: "Ваш результат: \(correctAnswers)/\(presenter.questionsAmount)",
-                buttonText: "Сыграть ещё раз")
-            show(quiz: viewModel)
-        } else {
-            presenter.switchToNextQuestion()
-            
-            imageView.image = nil
-            showLoadingIndicator()
-            
-            questionFactory.requestNextQuestion()
-        }
-    }
+//    private func showNextQuestionOrResults() {
+//        imageView.layer.borderWidth = 0
+//        if presenter.isLastQuestion() {
+//            refreshStatistic()
+//            enableButtons(isEnable: true)
+//            let viewModel = QuizResultsViewModel(
+//                title: "Этот раунд окончен!",
+//                text: "Ваш результат: \(correctAnswers)/\(presenter.questionsAmount)",
+//                buttonText: "Сыграть ещё раз")
+//            show(quiz: viewModel)
+//        } else {
+//            presenter.switchToNextQuestion()
+//            
+//            imageView.image = nil
+//            showLoadingIndicator()
+//            
+//            questionFactory.requestNextQuestion()
+//        }
+//    }
     
-    private func show(quiz result: QuizResultsViewModel) {
+    func show(quiz result: QuizResultsViewModel) {
         let bestGame = statisticService.bestGame
         let bestDate = bestGame.date.dateTimeString
         let currentAccuracy = "\(String(format: "%.2f", statisticService.totalAccuracy))%"
@@ -118,7 +118,7 @@ final class MovieQuizViewController: UIViewController {
         alertPresenter?.show(alertModel: alertModel)
     }
     
-    private func showLoadingIndicator() {
+    func showLoadingIndicator() {
         activityIndicator.color = .black
         activityIndicator.isHidden = false
         activityIndicator.startAnimating()
