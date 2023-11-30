@@ -1,28 +1,21 @@
 import Foundation
+
 import UIKit
 
-
-protocol AlertPresenter {
-    
-    func show(alertModel: AlertModel)
-}
-
-final class ResultAlertPresenter {
-    private weak var viewController: UIViewController?
-    
-    init(viewController: UIViewController) {
-        self.viewController = viewController
-    }
-}
-
-extension ResultAlertPresenter: AlertPresenter {
-    func show(alertModel: AlertModel) {
-        let alert = UIAlertController(title: alertModel.title, message: alertModel.message, preferredStyle: .alert)
-        let action = UIAlertAction(title: alertModel.buttonText, style: .default) { _ in
-            alertModel.completion()
+final class ResultAlertPresenter: UIViewController, AlertPresenterProtocol {
+    weak var delegate: AlertPresenterDelegate?
+    func showResult(quiz result: AlertModel) {
+        let alert = UIAlertController(
+            title: result.title,
+            message: result.message,
+            preferredStyle: .alert
+        )
+        alert.view.accessibilityIdentifier = "Game results"
+        let action = UIAlertAction(title: result.buttonText, style: .default) { _ in
+            self.delegate?.didReceiveAlert()
         }
-        alert.addAction(action)
         
-        viewController?.present(alert, animated: true, completion: nil)
+        alert.addAction(action)
+        delegate?.present(alert, animated: true, completion: nil)
     }
 }
